@@ -1,34 +1,55 @@
-# Task 01 – Descriptive Statistics (Pure Python vs Pandas)
+# Task 01 – Descriptive Statistics with and without Pandas
 
-## Project overview
-This project explores a real-world political advertising dataset of Facebook ad purchases tied to the 2024 U.S. presidential election. The goal is to compute descriptive statistics in two independent ways:
-1) `pure_python_stats.py` using only the Python standard library
-2) `pandas_stats.py` using Pandas
+## Purpose
+This repository completes SU OPT Research Task 01: compute descriptive statistics for a real-world political advertising dataset using two independent approaches:
+1) A pure Python implementation using only the standard library (no Pandas, no NumPy)
+2) A Pandas implementation that reproduces the same descriptive truths
 
-The purpose is to verify that both approaches arrive at the same statistical truths while documenting tradeoffs in correctness, transparency, and development speed.  [oai_citation:1‡Research_Task_01 (1).docx](sediment://file_000000005b2871f5a29327a553f4a717)
+The goal is not only to compute statistics, but also to compare how manual computation differs from library-driven analysis in terms of type inference, missing value handling, and reproducibility.  [oai_citation:1‡Research_Task_01 (3).docx](sediment://file_000000000d9c722fb16e30f17069cbab)
 
-## Dataset (not included in this repo)
-Per assignment requirements, the dataset is NOT committed to GitHub.  [oai_citation:2‡Research_Task_01 (1).docx](sediment://file_000000005b2871f5a29327a553f4a717)
+## Dataset
+This dataset contains Facebook ads run during the 2024 U.S. presidential election period. Each row represents an ad purchase and includes:
+- Advertiser/page identifiers (page_id, page_name)
+- Ad identifiers (ad_id)
+- Date fields (creation and delivery timing)
+- Spend and impressions fields (reported as ranges)
+- Multiple “illuminating_*” columns that act as binary indicator fields describing message types, topics, and other characteristics
 
-Expected file:
+### Dataset is NOT included in this repo
+Per the task requirements, the dataset file must not be committed to GitHub.  [oai_citation:2‡Research_Task_01 (3).docx](sediment://file_000000000d9c722fb16e30f17069cbab)
+
+Expected file name:
 - `fb_ads_president_scored_anon.csv`
 
-Place the dataset locally in:
+Place the dataset locally at:
 - `data/fb_ads_president_scored_anon.csv`
 
-Source: Google Drive – 2024 Facebook Political Ads (provided via SU OPT Research task materials).  [oai_citation:3‡Research_Task_01 (1).docx](sediment://file_000000005b2871f5a29327a553f4a717)
+## Repository contents
+- `pure_python_stats.py`  
+  Loads the CSV using the Python standard library and computes descriptive statistics with custom parsing, missing-value rules, and type inference (including datetime detection)
 
-## Repo structure
-- `pure_python_stats.py`  Standard library descriptive stats (with type inference)
-- `pandas_stats.py`       Pandas descriptive stats + saved outputs
-- `FINDINGS.md`           1–2 page narrative summary of what the data shows
-- `COMPARISON.md`         Reflection on differences between the two approaches
-- `requirements.txt`      Dependencies for Pandas script
-- `.gitignore`            Prevents dataset/temp files from being committed
-- `outputs/`              Saved results (optional to commit; can be ignored)
+- `pandas_stats.py`  
+  Loads the same CSV using Pandas and produces matching descriptive summaries, missing-value tables, and top categorical value frequencies
+
+- `FINDINGS.md`  
+  A 1–2 page narrative summary of key patterns in the data (written like the opening section of a research report)
+
+- `COMPARISON.md`  
+  A reflection describing what matched between the two scripts, what differed, and why
+
+- `requirements.txt`  
+  Dependencies needed for the Pandas script
+
+- `.gitignore`  
+  Prevents raw data and temp outputs from being committed
+
+- `outputs/`  
+  Optional folder where scripts write result files (JSON/CSV). Depending on workflow, this may be ignored by git.
 
 ## How to run
 
-### 1) Pure Python (no third-party libraries)
+### 1) Pure Python (standard library only)
+From the repo root, run:
+
 ```bash
 python pure_python_stats.py data/fb_ads_president_scored_anon.csv --out outputs/pure_python_summary.json
