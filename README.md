@@ -53,8 +53,3 @@ From the repo root, run:
 
 ```bash
 python pure_python_stats.py data/fb_ads_president_scored_anon.csv --out outputs/pure_python_summary.json
-
-### 2) Pandas
-
-```bash
-pip install -r requirements.txt
