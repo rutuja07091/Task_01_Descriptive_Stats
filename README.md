@@ -37,14 +37,6 @@ Place the dataset locally at:
 - `COMPARISON.md`  
   A reflection describing what matched between the two scripts, what differed, and why
 
-- `requirements.txt`  
-  Dependencies needed for the Pandas script
-
-- `.gitignore`  
-  Prevents raw data and temp outputs from being committed
-
-- `outputs/`  
-  Optional folder where scripts write result files (JSON/CSV). Depending on workflow, this may be ignored by git.
 
 ## How to run
 
