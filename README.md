@@ -1,4 +1,4 @@
-# Task_01_Descriptive_Stats — Descriptive Statistics With and Without Pandas  
+# Task_01_Descriptive_Stats 
 Facebook Political Ads Dataset (2024 U.S. Presidential Election)
 
 ## 1. Project purpose
