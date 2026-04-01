@@ -1,51 +1,60 @@
 ---
 
-## FINDINGS.md (detailed narrative)
+## FINDINGS.md
 
 ```md
-# FINDINGS: Facebook Political Ads (2024 U.S. Presidential Election)
+# FINDINGS: Facebook Political Ads Dataset (2024 U.S. Presidential Election)
 
-## Overview
-This dataset contains 246,745 Facebook ads with 40 columns describing advertiser identity, ad identifiers, delivery timing, and additional labeled fields connected to ad content. The dataset can be used to examine who is advertising at scale, when ad activity increases, how ads are distributed across spend/impressions reporting buckets, and how often specific labels/topics appear.
+## Dataset overview
+This dataset contains 246,745 Facebook ads across 40 columns tied to advertising activity during the 2024 U.S. presidential election period. Each row represents an ad purchase linked to an organization/page and includes identifiers (page_id, page_name, ad_id), timing fields (ad_creation_time, ad_delivery_start_time, ad_delivery_stop_time), metadata fields (bylines, publisher_platforms, currency), and a set of labeled “illuminating_*” fields that function as content indicators.
 
-A key structural feature of this dataset is that major quantitative fields like impressions and spend are reported as bracketed ranges instead of exact values. This affects how descriptive statistics should be interpreted.
+The dataset is useful for understanding which political actors are advertising at scale, how activity changes over time, and how ads are distributed across reporting buckets for impressions and spend.
 
-## Dataset size and completeness
-At a high level, the dataset is large (246,745 rows) and mostly complete, with only a few columns containing meaningful missing values. The highest missing field is `ad_delivery_stop_time` (2,159 missing, 0.875%), followed by `bylines` (1,009 missing, 0.409%) and `estimated_audience_size` (579 missing, 0.235%). The majority of other fields show full coverage.
+## Data completeness and quality
+Most columns are complete, with missingness concentrated in a small number of fields:
+- `ad_delivery_stop_time`: 2,159 missing (0.875%)
+- `bylines`: 1,009 missing (0.409%)
+- `estimated_audience_size`: 579 missing (0.235%)
 
-Missing stop times may reflect ads that were still running at the time the data was collected or incomplete reporting. Missing bylines suggest that sponsor/attribution metadata is not consistently present for every ad.
+The missing stop times likely reflect ads that were still running at the time of capture or incomplete reporting. Missing bylines suggest that sponsor/attribution metadata is not consistently present across all records. Overall, the dataset appears clean enough for descriptive summaries and deeper analysis.
 
-## Advertising concentration among a small number of pages
-Ad volume is concentrated among a relatively small number of advertiser pages. The top page by ad count is Kamala Harris (55,503 ads), followed by Donald J. Trump (23,988) and Joe Biden (14,822). Additional high-volume pages include The Daily Scroll (10,461) and Kamala HQ (7,564).
+## Concentration among major advertiser pages
+Ad volume is highly concentrated among a limited number of advertiser pages. The top page_name values by ad count are:
+- Kamala Harris: 55,503
+- Donald J. Trump: 23,988
+- Joe Biden: 14,822
+- The Daily Scroll: 10,461
+- Kamala HQ: 7,564
 
-This concentration suggests that a small number of high-profile political pages account for a large share of the ads captured in the dataset, rather than the activity being evenly distributed across thousands of pages.
+This concentration suggests that a small group of major political pages account for a large fraction of the ad activity in the dataset, rather than ad volume being evenly distributed across thousands of pages.
 
-## Timing patterns: spikes near the end of the election cycle
-The date fields in the dataset span multiple years, with the earliest observed date at 2021-07-06 and the latest observed date at 2024-11-05. Within this overall range, ad creation and ad delivery start dates show clear clustering in late October 2024.
+## Timing patterns and late-cycle spikes
+Datetime parsing shows that the dataset spans multiple years:
+- Earliest observed date: 2021-07-06
+- Latest observed date: 2024-11-05
 
-The most common ad_creation_time is 2024-10-27 (8,619 ads), and the most common ad_delivery_start_time is 2024-10-28 (10,089 ads). This indicates a surge in ad creation and launches in the final days leading into Election Day, consistent with late-cycle campaign strategy where activity ramps up as the election approaches.
+Within that range, the highest-frequency creation and launch dates cluster in late October 2024. The most common ad_creation_time is 2024-10-27, and the most common ad_delivery_start_time is 2024-10-28. This indicates a strong surge in ad publishing and launches in the final period leading up to Election Day.
 
-## Spend and impressions are categorical ranges
-Although `spend` and `impressions` look like numeric fields conceptually, the values are stored as string representations of lower/upper bound ranges (e.g., `{'lower_bound': '0', 'upper_bound': '99'}` for spend). This means a direct mean/median computed on these values would not be meaningful without additional parsing and conversion.
+## Spend and impressions are range-encoded buckets
+Although `spend` and `impressions` are conceptually numeric, they are stored as string-encoded lower/upper bound ranges (for example, `{'lower_bound': '0', 'upper_bound': '99'}` for spend). Because these are intervals rather than single values, direct numeric summaries (mean/median) are not meaningful unless the ranges are transformed into numeric estimates (e.g., using lower bounds or midpoints).
 
-The most common spend bucket is `0–99` (135,950 ads). The most common impressions bucket is `0–999` (80,822 ads). The dominance of these lowest buckets suggests that many ads are small-budget ads and/or low-impression ads, at least according to the reporting granularity in the dataset.
+The most frequent buckets indicate many ads fall into the lowest reporting ranges:
+- Spend bucket `0–99` is the most common
+- Impressions bucket `0–999` is the most common
 
-A useful next step (not required for this task, but logically motivated) would be to extract lower/upper bounds and compute a midpoint estimate to enable numeric summaries of spend and impressions.
+This suggests a large portion of ads are reported in low spend and low impressions categories, at least by the platform’s reporting granularity.
 
-## Indicator fields provide additional interpretability
-A large set of columns in the dataset are `illuminating_*` indicator fields. In Pandas, these appear as int64 and many behave like 0/1 flags. For such columns, the mean can be interpreted as the share of ads that carry that label.
+## Indicator fields provide interpretable rates
+The dataset contains many `illuminating_*` columns stored as binary indicators (0/1). In Pandas, these appear as int64 fields. For binary indicators, the mean can be interpreted as the share of ads with that flag. For example, fields such as `illuminating_msg_type_advocacy`, `illuminating_msg_type_issue`, and `illuminating_msg_type_attack` have non-zero means, implying that ads in the dataset span multiple message strategies rather than a single content type.
 
-For example, `illuminating_msg_type_advocacy`, `illuminating_msg_type_issue`, and `illuminating_msg_type_attack` have non-zero means, indicating that a meaningful share of ads falls into each message category. This provides a way to describe the composition of the ad corpus beyond advertiser identity and timing.
+These indicators offer a way to characterize the corpus beyond volume and timing.
 
 ## Key takeaways
-1) The dataset is large and mostly complete, with missingness concentrated in a small set of metadata fields (stop time, bylines, estimated audience size)
-2) Ad volume is concentrated among major political pages, with Kamala Harris and Donald J. Trump among the most frequent advertisers by ad count
-3) Activity spikes in late October 2024, suggesting heavy late-cycle ad launches
-4) Spend and impressions are range-encoded, requiring careful interpretation and optional parsing for deeper spend analysis
-5) Binary indicator fields provide measurable rates that help characterize ad types and topics
+1) The dataset is large and mostly complete, with missingness concentrated in stop time, bylines, and estimated audience size
+2) Ad volume is concentrated among a small set of major political pages
+3) There is a clear spike in ad creation and launch activity in late October 2024
+4) Spend and impressions are reported as range buckets, so interpretation should reflect interval data rather than exact values
+5) Binary indicator fields provide measurable rates that describe ad message and topic characteristics
 
-## Next steps (optional)
-If extending this analysis, the most natural “go deeper” step would be:
-- parsing spend/impressions ranges into numeric estimates and ranking top pages by estimated spend
-- plotting ads over time (daily/weekly) to visualize spikes
-- comparing indicator field rates across top advertiser pages to see differences in message strategy
+## Optional next steps
+If extending this analysis, the most natural next step would be extracting numeric estimates from the spend and impressions ranges to rank advertisers by estimated spend (not just ad volume), and plotting activity over time (daily/weekly) to visualize spikes and changes through the election cycle.
