@@ -1,9 +1,4 @@
----
-
-## FINDINGS.md (final, research-style + uses your numbers + answers the task prompts)
-
-
-# FINDINGS — Facebook Political Ads (2024 U.S. Presidential Election)
+# Facebook Political Ads(2024 U.S. Presidential Election)
 
 ## 1) What this dataset captures
 This dataset contains 246,745 Facebook ads (40 columns) connected to the 2024 U.S. presidential election, where ads mention one or more presidential candidates. Each row is an ad purchase and includes advertiser identity (page_id/page_name), ad identifiers, delivery timing (creation/start/stop dates), and multiple labeled “illuminating_*” fields that describe ad characteristics (message type/topic flags and other indicators).
